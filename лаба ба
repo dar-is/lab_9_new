@@ -1,0 +1,387 @@
+////////////лаба 10-1
+#include <stdio.h>
+#include <math.h>
+
+// 1. Определение первой функции F1(x)
+double fa(double x) {
+    double y;
+    if (x <= 3) {
+        y = x * x - 3 * x + 9;
+    } else {
+        y = 1.0 / (x * x * x + 3);
+    }
+    return y;
+}
+
+// Определение второй функции F2(x)
+double fb(double x) {
+    double y;
+    y = x * exp(sin(x * x));
+    return y;
+}
+
+int main() {
+    double x;
+    int choice;
+
+    // Запрос значения x у пользователя
+    printf("Введите значение x: ");
+    if (scanf("%lf", &x) != 1) {
+        return 1;
+    }
+
+    // 2. Вывод значений функций для заданного x
+    printf("\n--- Значения функций ---\n");
+    printf("fa(x) = %lf, fb(x) = %lf\n", fa(x), fb(x));
+
+    // 3. Вывод произведения, разности квадратов и удвоенной суммы с пояснениями
+    // Разность квадратов: (fa)^2 - (fb)^2
+    // Удвоенная сумма: 2 * (fa + fb)
+    printf("\n--- Вычисления ---\n");
+    printf("произведение: %lf\n", fa(x) * fb(x));
+    printf("разность квадратов: %lf\n", (fa(x) * fa(x)) - (fb(x) * fb(x)));
+    printf("удвоенная сумма: %lf\n", 2 * (fa(x) + fb(x)));
+
+    // 4. Меню для выбора расчета
+    printf("\n--- МЕНЮ ---\n");
+    printf("1. Рассчитать значение fa(x)\n");
+    printf("2. Рассчитать значение fb(x)\n");
+    printf("3. Рассчитать произведение\n");
+    printf("4. Рассчитать разность квадратов\n");
+    printf("5. Рассчитать удвоенную сумму\n");
+    printf("Выберите пункт меню (от 1 до 5): ");
+    
+    if (scanf("%d", &choice) != 1) {
+        return 1;
+    }
+
+    printf("\nРезультат: ");
+    switch (choice) {
+        case 1:
+            printf("fa(x) = %lf\n", fa(x));
+            break;
+        case 2:
+            printf("fb(x) = %lf\n", fb(x));
+            break;
+        case 3:
+            printf("произведение = %lf\n", fa(x) * fb(x));
+            break;
+        case 4:
+            printf("разность квадратов = %lf\n", (fa(x) * fa(x)) - (fb(x) * fb(x)));
+            break;
+        case 5:
+            printf("удвоенная сумма = %lf\n", 2 * (fa(x) + fb(x)));
+            break;
+        default:
+            printf("Ошибка: неверный пункт меню!\n");
+    }
+
+    return 0;
+}
+
+//////////лаба 10-2
+#include <stdio.h>
+#include <math.h>
+
+/* Способ 2: сумма N членов ряда Маклорена */
+double sin_n(double x, int N)
+{
+    double sum = 0;
+    double term = x;   /* первый член ряда: x */
+    int k;
+
+    for (k = 1; k <= N; k++)
+    {
+        sum = sum + term;
+        /* переход к следующему члену: умножаем на -x*x / ((2k)*(2k+1)) */
+        term = term * (-1) * x * x / ((2 * k) * (2 * k + 1));
+    }
+    return sum;
+}
+
+/* Способ 3: суммируем, пока очередной член по модулю не станет меньше eps */
+double sin_eps(double x, double eps)
+{
+    double sum = 0;
+    double term = x;
+    int k = 1;
+
+    while (fabs(term) >= eps)
+    {
+        sum = sum + term;
+        term = term * (-1) * x * x / ((2 * k) * (2 * k + 1));
+        k++;
+    }
+    return sum;
+}
+
+int main()
+{
+    double x, eps;
+    double s1, s2, s3;
+    int n;
+
+    printf("Введите x: ");
+    scanf("%lf", &x);
+    printf("Введите точность eps: ");
+    scanf("%lf", &eps);
+
+    /* Способ 1: стандартная библиотека */
+    s1 = sin(x);
+    /* Способ 2: ряд из 10 членов */
+    s2 = sin_n(x, 10);
+    /* Способ 3: ряд с заданной точностью */
+    s3 = sin_eps(x, eps);
+
+    printf("\nsin(%g)\n", x);
+    printf("1) sin из math.h:      %.10f\n", s1);
+    printf("2) sin_n (N = 10):     %.10f\n", s2);
+    printf("3) sin_eps (eps=%g): %.10f\n", eps, s3);
+
+    printf("\nОтклонение от sin из math.h:\n");
+    printf("sin_n:   %+.4e\n", s1 - s2);
+    printf("sin_eps: %+.4e\n", s1 - s3);
+
+    /* Таблица: как меняется результат при росте N */
+    printf("\n  N |  sin_N  | отклонение\n");
+    for (n = 1; n <= 10; n++)
+    {
+        s2 = sin_n(x, n);
+        printf("%3d | %.4f | %+.4e\n", n, s2, s1 - s2);
+    }
+
+    return 0;
+}
+
+///////// лаба 10-3 дз Дашутки
+#include <stdio.h>
+#include <math.h>
+
+/* Площадь равностороннего треугольника со стороной a */
+float area_triangle(float a)
+{
+    float s;
+    s = a * a * sqrt(3) / 4;
+    return s;
+}
+
+/* Вывод определения фигуры и проверка сторон (side - сторона в символах) */
+void print_definition(int side)
+{
+    int i, j;
+    int left = 0;     /* символов на левой стороне */
+    int right = 0;    /* символов на правой стороне */
+    int bottom = 0;   /* символов на нижней стороне */
+
+    printf("Равносторонний треугольник - это треугольник,\n");
+    printf("у которого все три стороны равны, а все углы равны 60 градусам.\n");
+
+    /* левая и правая стороны: по одному символу в каждой строке рисунка */
+    for (i = 1; i <= side; i++)
+    {
+        left = left + 1;
+        right = right + 1;
+    }
+
+    /* нижняя сторона: все символы последней строки рисунка */
+    for (j = 1; j <= side; j++)
+    {
+        bottom = bottom + 1;
+    }
+
+    printf("Символов на левой стороне: %d\n", left);
+    printf("Символов на правой стороне: %d\n", right);
+    printf("Символов на нижней стороне: %d\n", bottom);
+
+    if (left == right && right == bottom)
+    {
+        printf("треугольник равносторонний\n");
+    }
+    else
+    {
+        printf("треугольник не равносторонний\n");
+    }
+}
+
+/* Рисование треугольника символом '*' (сторона a) */
+void draw_triangle(int a)
+{
+    int i, j;
+
+    for (i = 1; i <= a; i++)
+    {
+        /* пробелы слева, чтобы треугольник был по центру */
+        for (j = 1; j <= a - i; j++)
+        {
+            printf(" ");
+        }
+        /* звездочки через пробел, чтобы стороны были равны */
+        for (j = 1; j <= i; j++)
+        {
+            printf("* ");
+        }
+        printf("\n");
+    }
+}
+
+int main()
+{
+    int choice;
+    float a;
+    int side;
+
+    printf("Фигура: равносторонний треугольник\n");
+    printf("Введите длину стороны (целое число): ");
+    scanf("%d", &side);
+    a = side;
+
+    do
+    {
+        printf("\nМеню:\n");
+        printf("1) Рассчитать площадь\n");
+        printf("2) Вывести определение фигуры\n");
+        printf("3) Нарисовать фигуру\n");
+        printf("0) Выход\n");
+        printf("Ваш выбор: ");
+        scanf("%d", &choice);
+
+        if (choice == 1)
+        {
+            printf("Площадь = %.2f\n", area_triangle(a));
+        }
+        else if (choice == 2)
+        {
+            print_definition(side);
+        }
+        else if (choice == 3)
+        {
+            draw_triangle(side);
+        }
+        else if (choice != 0)
+        {
+            printf("Неверный пункт меню!\n");
+        }
+    } while (choice != 0);
+
+    return 0;
+}
+
+////// лаба 10-3 дз Никитульки
+#include <stdio.h>
+#include <math.h>
+
+/* Площадь треугольника по трем сторонам (формула Герона) */
+float area_triangle(float a, float b, float c)
+{
+    float p, s;
+    p = (a + b + c) / 2;
+    s = sqrt(p * (p - a) * (p - b) * (p - c));
+    return s;
+}
+
+/* Вывод определения фигуры и проверка сторон */
+/* a - боковая сторона, b - основание (в символах) */
+void print_definition(int a, int b)
+{
+    int i;
+    int left = 0;     /* символов на левой стороне */
+    int right = 0;    /* символов на правой стороне */
+    int bottom = b;   /* символов на основании */
+
+    printf("Равнобедренный треугольник - это треугольник,\n");
+    printf("у которого две стороны равны, а углы при основании равны.\n");
+
+    /* левая и правая стороны: по одному символу в каждой строке рисунка */
+    for (i = 1; i <= a; i++)
+    {
+        left = left + 1;
+        right = right + 1;
+    }
+
+    printf("Символов на левой стороне: %d\n", left);
+    printf("Символов на правой стороне: %d\n", right);
+    printf("Символов на основании: %d\n", bottom);
+
+    if (left == right)
+    {
+        printf("треугольник равнобедренный\n");
+    }
+    else
+    {
+        printf("треугольник не равнобедренный\n");
+    }
+}
+
+/* Рисование треугольника символом '*' */
+/* a - боковая сторона (число строк); в строке номер i будет 2*i-1 звездочек */
+/* основание (последняя строка) = 2*a-1 звездочек, боковые стороны = a звездочек */
+void draw_triangle(int a)
+{
+    int i, j;
+
+    for (i = 1; i <= a; i++)
+    {
+        /* пробелы слева: по два на каждую строку, чтобы фигура была по центру */
+        for (j = 1; j <= 2 * (a - i); j++)
+        {
+            printf(" ");
+        }
+        /* звездочки через пробел: в строке i их 2*i-1 */
+        for (j = 1; j <= 2 * i - 1; j++)
+        {
+            printf("* ");
+        }
+        printf("\n");
+    }
+}
+
+int main()
+{
+    int choice;
+    int a, b;
+
+    printf("Фигура: равнобедренный треугольник\n");
+    printf("Введите боковую сторону a (целое число): ");
+    scanf("%d", &a);
+
+    /* проверка: сторона должна быть положительной */
+    while (a <= 0)
+    {
+        printf("Сторона должна быть больше нуля. Введите заново: ");
+        scanf("%d", &a);
+    }
+
+    /* основание: на рисунке оно всегда длиннее боковой стороны */
+    b = 2 * a - 1;
+    printf("Основание b = %d\n", b);
+
+    do
+    {
+        printf("\nМеню:\n");
+        printf("1) Рассчитать площадь\n");
+        printf("2) Вывести определение фигуры\n");
+        printf("3) Нарисовать фигуру\n");
+        printf("0) Выход\n");
+        printf("Ваш выбор: ");
+        scanf("%d", &choice);
+
+        if (choice == 1)
+        {
+            printf("Площадь = %.2f\n", area_triangle(a, a, b));
+        }
+        else if (choice == 2)
+        {
+            print_definition(a, b);
+        }
+        else if (choice == 3)
+        {
+            draw_triangle(a);
+        }
+        else if (choice != 0)
+        {
+            printf("Неверный пункт меню!\n");
+        }
+    } while (choice != 0);
+
+    return 0;
+}
