@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <math.h>
+
+/* Площадь равностороннего треугольника со стороной a */
+float area_triangle(float a)
+{
+    float s;
+    s = a * a * sqrt(3) / 4;
+    return s;
+}
+
+/* Вывод определения фигуры и проверка сторон (side - сторона в символах) */
+void print_definition(int side)
+{
+    int i, j;
+    int left = 0;
+    int right = 0;
+    int bottom = 0;
+
+    printf("Равносторонний треугольник - это треугольник,\n");
+    printf("у которого все три стороны равны, а все углы равны 60 градусам.\n");
+
+    for (i = 1; i <= side; i++)
+    {
+        left = left + 1;
+        right = right + 1;
+    }
+
+    for (j = 1; j <= side; j++)
+    {
+        bottom = bottom + 1;
+    }
+
+    printf("Символов на левой стороне: %d\n", left);
+    printf("Символов на правой стороне: %d\n", right);
+    printf("Символов на нижней стороне: %d\n", bottom);
+
+    if (left == right && right == bottom)
+    {
+        printf("треугольник равносторонний\n");
+    }
+    else
+    {
+        printf("треугольник не равносторонний\n");
+    }
+}
+
+/* Рисование треугольника заданным символом symbol (сторона a) */
+void draw_triangle(int a, char symbol)
+{
+    int i, j;
+
+    for (i = 1; i <= a; i++)
+    {
+        for (j = 1; j <= a - i; j++)
+        {
+            printf(" ");
+        }
+        for (j = 1; j <= i; j++)
+        {
+            printf("%c ", symbol);
+        }
+        printf("\n");
+    }
+}
+
+int main()
+{
+    int choice;
+    float a;
+    int side;
+    char symbol;
+
+    printf("Фигура: равносторонний треугольник\n");
+    printf("Введите длину стороны (целое число): ");
+    scanf("%d", &side);
+    a = side;
+
+    printf("Введите символ для рисования: ");
+    scanf(" %c", &symbol);   /* пробел перед %c пропускает перевод строки */
+
+    do
+    {
+        printf("\nМеню:\n");
+        printf("1) Рассчитать площадь\n");
+        printf("2) Вывести определение фигуры\n");
+        printf("3) Нарисовать фигуру\n");
+        printf("0) Выход\n");
+        printf("Ваш выбор: ");
+        scanf("%d", &choice);
+
+        if (choice == 1)
+        {
+            printf("Площадь = %.2f\n", area_triangle(a));
+        }
+        else if (choice == 2)
+        {
+            print_definition(side);
+        }
+        else if (choice == 3)
+        {
+            draw_triangle(side, symbol);
+        }
+        else if (choice != 0)
+        {
+            printf("Неверный пункт меню!\n");
+        }
+    } while (choice != 0);
+
+    return 0;
+}
