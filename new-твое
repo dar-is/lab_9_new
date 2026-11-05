@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <math.h>
+
+/* Площадь треугольника по трем сторонам (формула Герона) */
+float area_triangle(float a, float b, float c)
+{
+    float p, s;
+    p = (a + b + c) / 2;
+    s = sqrt(p * (p - a) * (p - b) * (p - c));
+    return s;
+}
+
+/* Проверка существования треугольника */
+int triangle_exists(int a, int b, int c)
+{
+    if (a <= 0 || b <= 0 || c <= 0)
+        return 0;
+    if (a + b <= c || a + c <= b || b + c <= a)
+        return 0;
+    return 1;
+}
+
+/* Вывод определения фигуры и проверка сторон */
+void print_definition(int a, int b)
+{
+    int i;
+    int left = 0;
+    int right = 0;
+    int bottom = b;
+
+    printf("Равнобедренный треугольник - это треугольник,\n");
+    printf("у которого две стороны равны, а углы при основании равны.\n");
+
+    for (i = 1; i <= a; i++)
+    {
+        left = left + 1;
+        right = right + 1;
+    }
+
+    printf("Символов на левой стороне: %d\n", left);
+    printf("Символов на правой стороне: %d\n", right);
+    printf("Символов на основании: %d\n", bottom);
+
+    if (left == right)
+    {
+        printf("треугольник равнобедренный\n");
+    }
+    else
+    {
+        printf("треугольник не равнобедренный\n");
+    }
+}
+
+/* Рисование равнобедренного треугольника символом symbol.
